@@ -1,11 +1,17 @@
-import React from 'react'
+import React from "react";
 
-const DarkModeToggle = () => {
+const DarkModeToggle = ({ darkMode, setDarkMode }) => {
   // TODO: Implement dark mode toggle logic
 
-  return (
-    <button>Toggle Dark Mode {/* TODO: Update this text from Dark to Light dynamically */}</button>
-  )
-}
+  function handleToggle() {
+    setDarkMode((prev) => !prev);
+  }
 
-export default DarkModeToggle
+  return (
+    <button onClick={handleToggle} aria-label="toggle-theme">
+      {darkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
+    </button>
+  );
+};
+
+export default DarkModeToggle;

@@ -1,38 +1,60 @@
-import React, { useState } from 'react'
-import ProductList from './components/ProductList'
-import DarkModeToggle from './components/DarkModeToggle'
-import Cart from './components/Cart'
+import React, { useState, useMemo } from "react";
+import ProductList, { sampleProducts } from "./components/ProductList"; // ✅ import sampleProducts
+import DarkModeToggle from "./components/DarkModeToggle";
+import Cart from "./components/Cart";
 
 const App = () => {
-  // TODO: Implement state for dark mode toggle
+  const [darkMode, setDarkMode] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [category, setCategory] = useState("All");
 
-  // TODO: Implement state for cart management
+  const categories = useMemo(() => {
+    const set = new Set(sampleProducts.map((p) => p.category));
+    return ["All", ...Array.from(set)];
+  }, []);
 
-  // TODO: Implement state for category filtering
+  const filteredProducts = useMemo(() => {
+    if (category === "All") return sampleProducts;
+    return sampleProducts.filter((p) => p.category === category);
+  }, [category]);
+
+  function handleAddToCart(item) {
+    setCart((prev) => [...prev, item]);
+  }
 
   return (
-    <div>
+    <div
+      className={darkMode ? "theme-dark" : "theme-light"}
+      style={{ minHeight: "100vh" }}
+    >
       <h1>🛒 Shopping App</h1>
       <p>
         Welcome! Your task is to implement filtering, cart management, and dark
         mode.
       </p>
 
-      {/* TODO: Render DarkModeToggle and implement dark mode functionality */}
+      <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
 
-      {/* TODO: Implement category filter dropdown */}
-      <label>Filter by Category: </label>
-      <select>
-        <option value="all">All</option>
-        <option value="Fruits">Fruits</option>
-        <option value="Dairy">Dairy</option>
+      <label htmlFor="category-select">Filter by Category: </label>
+      <select
+        id="category-select"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+      >
+        <option value="All">All</option>
+        {categories
+          .filter((c) => c !== "All")
+          .map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
       </select>
 
-      <ProductList />
-
-      {/* TODO: Implement and render Cart component */}
+      <ProductList products={filteredProducts} onAdd={handleAddToCart} />
+      <Cart items={cart} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
